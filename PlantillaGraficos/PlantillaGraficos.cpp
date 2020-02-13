@@ -98,7 +98,46 @@ void actualizar()
 
 }
 
-void dibujar() {
+void laberinto()
+{
+	glBegin(GL_QUADS);
+
+	glColor3f(1.0f, 1, 1.0f);
+
+	glVertex3f(-1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, 0.0f);
+	glVertex3f(-1.0f, -1.0f, 0.0f);
+
+	glEnd();
+
+	glBegin(GL_QUADS);
+
+	glColor3f(0.0f, 0, 0.0f);
+
+	glVertex3f(-0.9f, 0.9f, 0.0f);
+	glVertex3f(0.9f, 0.9f, 0.0f);
+	glVertex3f(0.9f, -0.9f, 0.0f);
+	glVertex3f(-0.9f, -0.9f, 0.0f);
+
+	glEnd();
+
+	glBegin(GL_QUADS);
+
+	glColor3f(1.0f, 1, 1.0f);
+
+	glVertex3f(-1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, 0.0f);
+	glVertex3f(-1.0f, -1.0f, 0.0f);
+
+	glEnd();
+}
+
+void dibujar() 
+{
+	laberinto();
+
 	glPushMatrix();
 
 	glTranslatef(posXtriangulo, posYtriangulo,0.0f);
@@ -131,7 +170,7 @@ int main()
 	//Si se puedo iniciar GLFW
 	//Inicializmos la ventana
 	//Todas las funciones especificas de GLFW tienen el sufijo glfw
-	window = glfwCreateWindow(600,600,"Ventana",NULL,NULL);
+	window = glfwCreateWindow(1000,1000,"Ventana",NULL,NULL);
 
 	//Si no pudo crear la ventana
 	//Terminamos ejecucion
@@ -170,7 +209,7 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		//Establecer region de dibujo
-		glViewport(0, 0, 600, 600);
+		glViewport(0, 0, 1000, 1000);
 		//Establecemos el color de borrado.
 		glClearColor(1,0.8,0,1);
 		//Borrar!
