@@ -23,7 +23,7 @@ float posXtriangulo = 0.0f, posYtriangulo = 0.0f,rotXtriangulo = 0.0f, rotYtrian
 //Declarar ventana
 GLFWwindow* window;
 
-bool grid[10][10];
+int grid[10][10];
 
 
 void teclado_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -48,6 +48,62 @@ void teclado_callback(GLFWwindow* window, int key, int scancode, int action, int
 	*/
 }
 
+bool puedeMoverX(float offsetX) {
+	float auxPosY = posYtriangulo + 1;
+	float auxPosX = posXtriangulo + 1;
+
+	float auxPosicionActualGridY = auxPosY * 5.0f;
+	float auxPosicionActualGridX = (auxPosX + offsetX) * 5.0f;
+
+	int posicionActualGridYTruncado = trunc(auxPosicionActualGridY);
+	int posicionActualGridYRedondeado = round(auxPosicionActualGridY);
+	int posicionActualGridX = trunc(auxPosicionActualGridX);
+
+	float margenTolerancia = 0.10f;
+	bool entraEnMargen = (auxPosicionActualGridY - posicionActualGridYTruncado <= 0.5 + margenTolerancia &&
+		auxPosicionActualGridY - posicionActualGridYTruncado >= 0.5 - margenTolerancia);
+
+	if (posicionActualGridYRedondeado == posicionActualGridYTruncado && !entraEnMargen) {
+		posicionActualGridYTruncado--;
+	}
+
+	if (posicionActualGridYRedondeado != posicionActualGridYTruncado && entraEnMargen) {
+		posicionActualGridYRedondeado--;
+	}
+
+	return grid[posicionActualGridX][posicionActualGridYTruncado] == 0 &&
+		grid[posicionActualGridX][posicionActualGridYRedondeado] == 0 &&
+		posicionActualGridX < 10 && auxPosicionActualGridX >= 0;
+}
+
+bool puedeMoverY(float offsetY) {
+	float auxPosY = posYtriangulo + 1;
+	float auxPosX = posXtriangulo + 1;
+
+	float auxPosicionActualGridY = (auxPosY + offsetY) * 5.0f;
+	float auxPosicionActualGridX = auxPosX * 5.0f;
+
+	int posicionActualGridY = trunc(auxPosicionActualGridY);
+	int posicionActualGridXTruncado = trunc(auxPosicionActualGridX);
+	int posicionActualGridXRedondeado = round(auxPosicionActualGridX);
+
+	float margenTolerancia = 0.10f;
+	bool entraEnMargen = (auxPosicionActualGridX - posicionActualGridXTruncado <= 0.5 + margenTolerancia &&
+		auxPosicionActualGridX - posicionActualGridXTruncado >= 0.5 - margenTolerancia);
+
+	if (posicionActualGridXRedondeado == posicionActualGridXTruncado && !entraEnMargen) {
+		posicionActualGridXTruncado--;
+	}
+
+	if (posicionActualGridXRedondeado != posicionActualGridXTruncado && entraEnMargen) {
+		posicionActualGridXRedondeado--;
+	}
+
+	return grid[posicionActualGridXTruncado][posicionActualGridY] == 0 &&
+		grid[posicionActualGridXRedondeado][posicionActualGridY] == 0 &&
+		posicionActualGridY < 10 && auxPosicionActualGridY >= 0;
+}
+
 void actualizar()
 {
 	tiempoactual = glfwGetTime();
@@ -55,33 +111,40 @@ void actualizar()
 	double tiempoDiferencial = tiempoactual - tiempoanterior;
 
 
-	int estadoderecha = glfwGetKey(window, GLFW_KEY_RIGHT);
+	int estadoDerecha = glfwGetKey(window, GLFW_KEY_RIGHT);
 
-	if (estadoderecha == GLFW_PRESS)
+	if (estadoDerecha == GLFW_PRESS)
 	{
-		posXtriangulo += 0.5 * tiempoDiferencial;
+		if (puedeMoverX(0.1f)) {
+			posXtriangulo += 0.5 * tiempoDiferencial;
+		}
 	}
 
+	int estadoIzquierda = glfwGetKey(window, GLFW_KEY_LEFT);
 
-	int estadoizquierda = glfwGetKey(window, GLFW_KEY_LEFT);
-
-	if (estadoizquierda == GLFW_PRESS)
+	if (estadoIzquierda == GLFW_PRESS)
 	{
-		posXtriangulo -= 0.5 * tiempoDiferencial;;
+		if (puedeMoverX(-0.1f)) {
+			posXtriangulo -= 0.5 * tiempoDiferencial;
+		}
 	}
 
-	int estadoarriba = glfwGetKey(window, GLFW_KEY_UP);
+	int estadoArriba = glfwGetKey(window, GLFW_KEY_UP);
 
-	if (estadoarriba == GLFW_PRESS)
+	if (estadoArriba == GLFW_PRESS)
 	{
-		posYtriangulo += 0.5 * tiempoDiferencial;;
+		if (puedeMoverY(0.1f)) {
+			posYtriangulo += 0.5 * tiempoDiferencial;
+		}
 	}
 
-	int estadoabajo = glfwGetKey(window, GLFW_KEY_DOWN);
+	int estadoAbajo = glfwGetKey(window, GLFW_KEY_DOWN);
 
-	if (estadoabajo == GLFW_PRESS)
+	if (estadoAbajo == GLFW_PRESS)
 	{
-		posYtriangulo -= 0.5 * tiempoDiferencial;;
+		if (puedeMoverY(-0.1f)) {
+			posYtriangulo -= 0.5 * tiempoDiferencial;
+		}
 	}
 
 	int estadorotizquierda = glfwGetKey(window, GLFW_KEY_A);
@@ -99,7 +162,6 @@ void actualizar()
 	}
 
 	tiempoanterior = tiempoactual;
-
 }
 
 void laberinto()
@@ -142,10 +204,9 @@ void generarGridAleatorio() {
 	srand(time(NULL));
 
 	for (int i = 0; i < 10; i++) {
-		int paredesX = 0;
 		for (int j = 0; j < 10; j++) {
-			grid[i][j] = (rand() % 5) == 0;
-			paredesX++;
+			bool crearPared = (rand() % 5) == 0;
+			grid[i][j] = crearPared ? 3 : 0;
 		}
 	}
 }
@@ -153,26 +214,23 @@ void generarGridAleatorio() {
 void dibujarMapa() {
 	float unidad = 2.0f / 10.0f;
 	float inicio = -1.0f;
-	int count = 0;
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
-			if (grid[i][j]) {
+			if (grid[i][j] > 0) {
+				glPushMatrix();
+				glTranslatef(i * unidad, j * unidad, 0.0f);
 				glBegin(GL_POLYGON);
-				glColor3f(0.0f, 0.0f, 0.0f);
 
-				float prueba = inicio + i * unidad;
-				float prueba2 = inicio + unidad + i * unidad;
-				float prueba3 = inicio + j * unidad;
-				float prueba4 = inicio + unidad + j * unidad;
+				glColor3f(0.0f, 0.0f, 0.0f);
 				
-				glVertex3f(inicio + i * unidad, inicio + j * unidad, 0.0f);
-				glVertex3f(inicio + i * unidad, inicio + unidad + j * unidad, 0.0f);
-				glVertex3f(inicio + unidad + i * unidad, inicio + unidad + j * unidad, 0.0f);
-				glVertex3f(inicio + unidad + i * unidad, inicio + j * unidad, 0.0f);
+				glVertex3f(-1.0f, -1.0f, 0.0f);
+				glVertex3f(-1.0f, -0.8f, 0.0f);
+				glVertex3f(-0.8f, -0.8f, 0.0f);
+				glVertex3f(-0.8f, -1.0f, 0.0f);
 				
 				glEnd();
-				count++;
+				glPopMatrix();
 			}
 		}
 	}
@@ -180,6 +238,7 @@ void dibujarMapa() {
 
 void dibujar() 
 {
+	//generarGridAleatorio();
 	dibujarMapa();
 	//laberinto();
 	
@@ -194,9 +253,9 @@ void dibujar()
 
 	glColor3f(0.2, 0.6, 0.1);
 
-	glVertex3f(0.0f,0.15f,0.0f);
-	glVertex3f(-0.15f, -0.15f, 0.0f);
-	glVertex3f(0.15f, -0.15f, 0.0f);
+	glVertex3f(0.0f,0.10f,0.0f);
+	glVertex3f(-0.10f, -0.10f, 0.0f);
+	glVertex3f(0.10f, -0.10f, 0.0f);
 
 	glEnd();
 
