@@ -25,27 +25,15 @@ GLFWwindow* window;
 
 int grid[10][10];
 
+void generarGridAleatorio() {
+	srand(time(NULL));
 
-void teclado_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	/*
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_RIGHT))
-	{
-		posXtriangulo += 0.01;
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			bool crearPared = (rand() % 5) == 0;
+			grid[i][j] = crearPared ? 3 : 0;
+		}
 	}
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_LEFT))
-	{
-		posXtriangulo -= 0.01;
-	}
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_UP))
-	{
-		posYtriangulo += 0.01;
-	}
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_DOWN))
-	{
-		posYtriangulo -= 0.01;
-	}
-	*/
 }
 
 bool puedeMoverX(float offsetX) {
@@ -110,7 +98,6 @@ void actualizar()
 
 	double tiempoDiferencial = tiempoactual - tiempoanterior;
 
-
 	int estadoDerecha = glfwGetKey(window, GLFW_KEY_RIGHT);
 
 	if (estadoDerecha == GLFW_PRESS)
@@ -147,18 +134,24 @@ void actualizar()
 		}
 	}
 
-	int estadorotizquierda = glfwGetKey(window, GLFW_KEY_A);
+	int estadoRotIzquierda = glfwGetKey(window, GLFW_KEY_A);
 
-	if(estadorotizquierda == GLFW_PRESS)
+	if(estadoRotIzquierda == GLFW_PRESS)
 	{
 		rotXtriangulo -= 24 * tiempoDiferencial;;
 	}
 
-	int estadorotderecha = glfwGetKey(window, GLFW_KEY_D);
+	int estadoRotDerecha = glfwGetKey(window, GLFW_KEY_D);
 	
-	if (estadorotderecha == GLFW_PRESS)
+	if (estadoRotDerecha == GLFW_PRESS)
 	{
 		rotXtriangulo += 24 * tiempoDiferencial;;
+	}
+
+	int estadoR = glfwGetKey(window, GLFW_KEY_R);
+	
+	if (estadoR == GLFW_PRESS) {
+		generarGridAleatorio();
 	}
 
 	tiempoanterior = tiempoactual;
@@ -198,17 +191,6 @@ void laberinto()
 	glVertex3f(-1.0f, -1.0f, 0.0f);
 
 	glEnd();
-}
-
-void generarGridAleatorio() {
-	srand(time(NULL));
-
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			bool crearPared = (rand() % 5) == 0;
-			grid[i][j] = crearPared ? 3 : 0;
-		}
-	}
 }
 
 void dibujarMapa() {
