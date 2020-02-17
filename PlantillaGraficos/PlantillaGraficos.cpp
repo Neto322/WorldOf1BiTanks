@@ -143,16 +143,16 @@ void actualizar()
 	
 
 	
-		rotXcanon += axes[2] * -360 * tiempoDiferencial;
+	rotXcanon += axes[2] * -360 * tiempoDiferencial;
 
-		int buttoncount;
+	int buttoncount;
 
-		const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttoncount);
+	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttoncount);
 
-		if (GLFW_PRESS == buttons[0])
-		{
-			std::cout << "Boton puchado" << std::endl;
-		}
+	if (GLFW_PRESS == buttons[0])
+	{
+		std::cout << "Boton puchado" << std::endl;
+	}
 
 	int estadoR = glfwGetKey(window, GLFW_KEY_R);
 	
