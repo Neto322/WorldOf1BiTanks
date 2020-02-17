@@ -10,38 +10,93 @@
 #include "GLFW/glfw3.h"
 
 #include <iostream>
+#include <random>
+#include <time.h>
 
 using namespace std;
 
 double tiempoactual, tiempoanterior;
 
-float posXtriangulo = 0.0f, posYtriangulo = 0.0f,rotXtriangulo = 0.0f, rotYtriangulo = 0.0f;
+float posXtanque = 0.0f, posYtanque = 0.0f,rotXcanon = 0.0f, rotYtriangulo = 0.0f;
 
+const float* axes;
+
+int count;
+
+int present;
+
+float sensibilidadstick;
 
 //Declarar ventana
 GLFWwindow* window;
 
+int grid[10][10];
 
-void teclado_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	/*
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_RIGHT))
-	{
-		posXtriangulo += 0.01;
+void generarGridAleatorio() {
+	srand(time(NULL));
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			bool crearPared = (rand() % 5) == 0;
+			grid[i][j] = crearPared ? 3 : 0;
+		}
 	}
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_LEFT))
-	{
-		posXtriangulo -= 0.01;
+}
+
+bool puedeMoverX(float offsetX) {
+	float auxPosY = posYtanque + 1;
+	float auxPosX = posXtanque + 1;
+
+	float auxPosicionActualGridY = auxPosY * 5.0f;
+	float auxPosicionActualGridX = (auxPosX + offsetX) * 5.0f;
+
+	int posicionActualGridYTruncado = trunc(auxPosicionActualGridY);
+	int posicionActualGridYRedondeado = round(auxPosicionActualGridY);
+	int posicionActualGridX = trunc(auxPosicionActualGridX);
+
+	float margenTolerancia = 0.10f;
+	bool entraEnMargen = (auxPosicionActualGridY - posicionActualGridYTruncado <= 0.5 + margenTolerancia &&
+		auxPosicionActualGridY - posicionActualGridYTruncado >= 0.5 - margenTolerancia);
+
+	if (posicionActualGridYRedondeado == posicionActualGridYTruncado && !entraEnMargen) {
+		posicionActualGridYTruncado--;
 	}
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_UP))
-	{
-		posYtriangulo += 0.01;
+
+	if (posicionActualGridYRedondeado != posicionActualGridYTruncado && entraEnMargen) {
+		posicionActualGridYRedondeado--;
 	}
-	if ((action == GLFW_PRESS || action == GLFW_REPEAT) && (key == GLFW_KEY_DOWN))
-	{
-		posYtriangulo -= 0.01;
+
+	return grid[posicionActualGridX][posicionActualGridYTruncado] == 0 &&
+		grid[posicionActualGridX][posicionActualGridYRedondeado] == 0 &&
+		posicionActualGridX < 10 && auxPosicionActualGridX >= 0;
+}
+
+bool puedeMoverY(float offsetY) {
+	float auxPosY = posYtanque + 1;
+	float auxPosX = posXtanque + 1;
+
+	float auxPosicionActualGridY = (auxPosY + offsetY) * 5.0f;
+	float auxPosicionActualGridX = auxPosX * 5.0f;
+
+	int posicionActualGridY = trunc(auxPosicionActualGridY);
+	int posicionActualGridXTruncado = trunc(auxPosicionActualGridX);
+	int posicionActualGridXRedondeado = round(auxPosicionActualGridX);
+
+	float margenTolerancia = 0.10f;
+	bool entraEnMargen = (auxPosicionActualGridX - posicionActualGridXTruncado <= 0.5 + margenTolerancia &&
+		auxPosicionActualGridX - posicionActualGridXTruncado >= 0.5 - margenTolerancia);
+
+	if (posicionActualGridXRedondeado == posicionActualGridXTruncado && !entraEnMargen) {
+		posicionActualGridXTruncado--;
 	}
-	*/
+
+	if (posicionActualGridXRedondeado != posicionActualGridXTruncado && entraEnMargen) {
+		posicionActualGridXRedondeado--;
+	}
+
+	return grid[posicionActualGridXTruncado][posicionActualGridY] == 0 &&
+		grid[posicionActualGridXRedondeado][posicionActualGridY] == 0 &&
+		posicionActualGridY < 10 && auxPosicionActualGridY >= 0;
 }
 
 void actualizar()
@@ -50,84 +105,68 @@ void actualizar()
 
 	double tiempoDiferencial = tiempoactual - tiempoanterior;
 
+	int count;
 
-	int estadoderecha = glfwGetKey(window, GLFW_KEY_RIGHT);
+	axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
 
-	if (estadoderecha == GLFW_PRESS)
+	std::cout << " Number of axis avaiable " << axes[2] << std::endl;
+
+
+	if (axes[0] > 0.3)
 	{
-		posXtriangulo += 0.5 * tiempoDiferencial;
+		if (puedeMoverX(0.1f)) {
+			posXtanque += 0.5 * tiempoDiferencial;
+		}
 	}
 
 
-	int estadoizquierda = glfwGetKey(window, GLFW_KEY_LEFT);
-
-	if (estadoizquierda == GLFW_PRESS)
+	if (axes[0] < -0.5)
 	{
-		posXtriangulo -= 0.5 * tiempoDiferencial;;
+		if (puedeMoverX(-0.1f)) {
+			posXtanque -= 0.5 * tiempoDiferencial;
+		}
 	}
-
-	int estadoarriba = glfwGetKey(window, GLFW_KEY_UP);
-
-	if (estadoarriba == GLFW_PRESS)
-	{
-		posYtriangulo += 0.5 * tiempoDiferencial;;
-	}
-
-	int estadoabajo = glfwGetKey(window, GLFW_KEY_DOWN);
-
-	if (estadoabajo == GLFW_PRESS)
-	{
-		posYtriangulo -= 0.5 * tiempoDiferencial;;
-	}
-
-	int estadorotizquierda = glfwGetKey(window, GLFW_KEY_A);
-
-	if(estadorotizquierda == GLFW_PRESS)
-	{
-		rotXtriangulo -= 24 * tiempoDiferencial;;
-	}
-
-	int estadorotderecha = glfwGetKey(window, GLFW_KEY_D);
 	
-	if (estadorotderecha == GLFW_PRESS)
+	if (axes[1] < 0.5)
 	{
-		rotXtriangulo += 24 * tiempoDiferencial;;
+		if (puedeMoverY(0.1f)) {
+			posYtanque += 0.5 * tiempoDiferencial;
+		}
+	}
+	
+	if (axes[1] > -0.5)
+	{ 
+		if (puedeMoverY(-0.1f)) {
+			posYtanque -= 0.5 * tiempoDiferencial;
+		}
+	}
+	
+	rotXcanon += axes[2] * -360 * tiempoDiferencial * .35;
+
+	int buttoncount;
+
+	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttoncount);
+
+	if (GLFW_PRESS == buttons[0])
+	{
+		std::cout << "Boton puchado" << std::endl;
+	}
+
+	int estadoR = glfwGetKey(window, GLFW_KEY_R);
+	
+	if (estadoR == GLFW_PRESS) {
+		generarGridAleatorio();
 	}
 
 	tiempoanterior = tiempoactual;
-
-}
-
-void laberinto()
-{
-	glBegin(GL_QUADS);
-
-	glColor3f(1.0f, 1, 1.0f);
-
-	glVertex3f(-1.0f, 1.0f, 0.0f);
-	glVertex3f(1.0f, 1.0f, 0.0f);
-	glVertex3f(1.0f, -1.0f, 0.0f);
-	glVertex3f(-1.0f, -1.0f, 0.0f);
-
-	glEnd();
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.0f, 0, 0.0f);
-
-	glVertex3f(-0.9f, 0.9f, 0.0f);
-	glVertex3f(0.9f, 0.9f, 0.0f);
-	glVertex3f(0.9f, -0.9f, 0.0f);
-	glVertex3f(-0.9f, -0.9f, 0.0f);
-
-	glEnd();
-
 }
 
 void canon()
 {
 	//Cañon
 	glPushMatrix();
+	glTranslatef(posXtanque, posYtanque, 0.0f);
+	glRotatef(rotXcanon, 0.0f, 0.0f, 1.0f);
 	glScalef(0.1f, 0.1f, 0.0f);
 
 	glBegin(GL_POLYGON);
@@ -148,6 +187,8 @@ void tanque()
 {
 	glPushMatrix();
 
+	glTranslatef(posXtanque, posYtanque, 0.0f);
+	glRotatef(rotXcanon, 0.0f, 0.0f, 1.0f);
 	glScalef(0.1f, 0.1f, 0.0f);
 
 	glBegin(GL_POLYGON);
@@ -497,20 +538,38 @@ void tanque()
 	glPopMatrix();
 }
 
+void dibujarMapa() {
+	float unidad = 2.0f / 10.0f;
+	float inicio = -1.0f;
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (grid[i][j] > 0) {
+				glPushMatrix();
+				glTranslatef(i * unidad, j * unidad, 0.0f);
+				glBegin(GL_POLYGON);
+
+				glColor3f(0.0f, 0.0f, 0.0f);
+				
+				glVertex3f(-1.0f, -1.0f, 0.0f);
+				glVertex3f(-1.0f, -0.8f, 0.0f);
+				glVertex3f(-0.8f, -0.8f, 0.0f);
+				glVertex3f(-0.8f, -1.0f, 0.0f);
+				
+				glEnd();
+				glPopMatrix();
+			}
+		}
+	}
+}
+
 void dibujar() 
 {
-	laberinto();
+	//generarGridAleatorio();
+	dibujarMapa();
 
-	glPushMatrix();
-
-	glTranslatef(posXtriangulo, posYtriangulo,0.0f);
-
-	
 	canon();
-
 	tanque();
-
-	glPopMatrix();
 }
 
 int main()
@@ -561,6 +620,10 @@ int main()
 	// Se llama a la funcion telcado_callback
 	//glfwSetKeyCallback(window, teclado_callback);
 
+     int present1 = glfwJoystickPresent(GLFW_JOYSTICK_1);
+
+	generarGridAleatorio();
+
 	//Ciclo de dibujo (Draw Loop)
 	while (!glfwWindowShouldClose(window))
 	{
@@ -576,6 +639,7 @@ int main()
 
 		actualizar();
 
+		cout << axes;
 
 		glfwPollEvents();
 
