@@ -141,7 +141,7 @@ void actualizar()
 		}
 	}
 	
-	rotXcanon += axes[2] * -360 * tiempoDiferencial;
+	rotXcanon += axes[2] * -360 * tiempoDiferencial * .35;
 
 	int buttoncount;
 
