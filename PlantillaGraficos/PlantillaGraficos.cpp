@@ -17,7 +17,7 @@ using namespace std;
 
 double tiempoactual, tiempoanterior;
 
-float posXtanque = 0.0f, posYtanque = 0.0f,rotXcanon = 0.0f, rotYtriangulo = 0.0f;
+float posXtanque1 = 0.0f, posYtanque1 = 0.0f,rotXcanon = 0.0f, rotYtriangulo = 0.0f;
 
 const float* axes;
 
@@ -26,6 +26,18 @@ int count;
 int present;
 
 float sensibilidadstick;
+
+float posXbala1 = 2.0f, posYbala1 = 2.0f;
+
+float hitsbala1 = 0.0f;
+
+float velocidadbala1 = 0.0f;
+
+double color1, color2, color3;
+
+
+float ultimoangulo = 0.0f;
+
 
 //Declarar ventana
 GLFWwindow* window;
@@ -44,8 +56,8 @@ void generarGridAleatorio() {
 }
 
 bool puedeMoverX(float offsetX) {
-	float auxPosY = posYtanque + 1;
-	float auxPosX = posXtanque + 1;
+	float auxPosY = posYtanque1 + 1;
+	float auxPosX = posXtanque1 + 1;
 
 	float auxPosicionActualGridY = auxPosY * 5.0f;
 	float auxPosicionActualGridX = (auxPosX + offsetX) * 5.0f;
@@ -72,8 +84,8 @@ bool puedeMoverX(float offsetX) {
 }
 
 bool puedeMoverY(float offsetY) {
-	float auxPosY = posYtanque + 1;
-	float auxPosX = posXtanque + 1;
+	float auxPosY = posYtanque1 + 1;
+	float auxPosX = posXtanque1 + 1;
 
 	float auxPosicionActualGridY = (auxPosY + offsetY) * 5.0f;
 	float auxPosicionActualGridX = auxPosX * 5.0f;
@@ -99,6 +111,8 @@ bool puedeMoverY(float offsetY) {
 		posicionActualGridY < 10 && auxPosicionActualGridY >= 0;
 }
 
+
+
 void actualizar()
 {
 	tiempoactual = glfwGetTime();
@@ -107,50 +121,172 @@ void actualizar()
 
 	int count;
 
-	axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
-
-	std::cout << " Number of axis avaiable " << axes[2] << std::endl;
 
 
-	if (axes[0] > 0.3)
+
+
+	if (int present = glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
-		if (puedeMoverX(0.1f)) {
-			posXtanque += 0.5 * tiempoDiferencial;
+		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+		if (axes[0] > 0.3)
+		{
+			if (puedeMoverX(0.1f)) {
+				posXtanque1 += 0.5 * tiempoDiferencial;
+			}
 		}
-	}
 
-
-	if (axes[0] < -0.5)
-	{
-		if (puedeMoverX(-0.1f)) {
-			posXtanque -= 0.5 * tiempoDiferencial;
+		if (axes[0] < -0.5)
+		{
+			if (puedeMoverX(-0.1f)) {
+				posXtanque1 -= 0.5 * tiempoDiferencial;
+			}
 		}
+
+		if (axes[1] < 0.5)
+		{
+			if (puedeMoverY(0.1f)) {
+				posYtanque1 += 0.5 * tiempoDiferencial;
+			}
+		}
+
+		if (axes[1] > -0.5)
+		{
+			if (puedeMoverY(-0.1f)) {
+				posYtanque1 -= 0.5 * tiempoDiferencial;
+			}
+		}
+
+		if (axes[2] > 0.5)
+		{
+			rotXcanon += axes[2] * -360 * tiempoDiferencial * .35;
+		}
+
+		if (axes[2] < -0.5)
+		{
+			rotXcanon += axes[2] * -360 * tiempoDiferencial * .35;
+		}
+
+		if (rotXcanon < -360)
+		{
+			rotXcanon = 0;
+		}
+		if (rotXcanon > 360)
+		{
+			rotXcanon = 0;
+		}
+
+		int buttoncount;
+
+		const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttoncount);
+
+		if (GLFW_PRESS == buttons[0])
+		{
+			std::cout << "Boton puchado" << std::endl;
+			if (hitsbala1 <= 0)
+			{
+				posXbala1 = posXtanque1 + 0.22;
+				posYbala1 = posYtanque1 + 0.3;
+				hitsbala1 = 3;
+				ultimoangulo = rotXcanon;
+			}
+			;
+		}
+		if (hitsbala1 > 0)
+		{
+			velocidadbala1 = 1;
+			posXbala1 += velocidadbala1 * cos((ultimoangulo + 90) * 3.141592 / 180.0f) * tiempoDiferencial;
+
+			posYbala1 += velocidadbala1 * sin((ultimoangulo + 90) * 3.141592 / 180.0f) * tiempoDiferencial;
+		}
+
+		if (hitsbala1 <= 0)
+		{
+			velocidadbala1 = 0;
+		}
+
 	}
 	
-	if (axes[1] < 0.5)
+	if (int present = glfwJoystickPresent(GLFW_JOYSTICK_2))
 	{
-		if (puedeMoverY(0.1f)) {
-			posYtanque += 0.5 * tiempoDiferencial;
+		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &count);
+		if (axes[0] > 0.3)
+		{
+			if (puedeMoverX(0.1f)) {
+				posXtanque1 += 0.5 * tiempoDiferencial;
+			}
 		}
-	}
-	
-	if (axes[1] > -0.5)
-	{ 
-		if (puedeMoverY(-0.1f)) {
-			posYtanque -= 0.5 * tiempoDiferencial;
+
+		if (axes[0] < -0.5)
+		{
+			if (puedeMoverX(-0.1f)) {
+				posXtanque1 -= 0.5 * tiempoDiferencial;
+			}
 		}
+
+		if (axes[1] < 0.5)
+		{
+			if (puedeMoverY(0.1f)) {
+				posYtanque1 += 0.5 * tiempoDiferencial;
+			}
+		}
+
+		if (axes[1] > -0.5)
+		{
+			if (puedeMoverY(-0.1f)) {
+				posYtanque1 -= 0.5 * tiempoDiferencial;
+			}
+		}
+
+		if (axes[2] > 0.5)
+		{
+			rotXcanon += axes[2] * -360 * tiempoDiferencial * .35;
+		}
+
+		if (axes[2] < -0.5)
+		{
+			rotXcanon += axes[2] * -360 * tiempoDiferencial * .35;
+		}
+
+		if (rotXcanon < -360)
+		{
+			rotXcanon = 0;
+		}
+		if (rotXcanon > 360)
+		{
+			rotXcanon = 0;
+		}
+
+		int buttoncount;
+
+		const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttoncount);
+
+		if (GLFW_PRESS == buttons[0])
+		{
+			std::cout << "Boton puchado" << std::endl;
+			if (hitsbala1 <= 0)
+			{
+				posXbala1 = posXtanque1 + 0.22;
+				posYbala1 = posYtanque1 + 0.3;
+				hitsbala1 = 3;
+				ultimoangulo = rotXcanon;
+			}
+			;
+		}
+		if (hitsbala1 > 0)
+		{
+			velocidadbala1 = 1;
+			posXbala1 += velocidadbala1 * cos((ultimoangulo + 90) * 3.141592 / 180.0f) * tiempoDiferencial;
+
+			posYbala1 += velocidadbala1 * sin((ultimoangulo + 90) * 3.141592 / 180.0f) * tiempoDiferencial;
+		}
+
+		if (hitsbala1 <= 0)
+		{
+			velocidadbala1 = 0;
+		}
+
 	}
-	
-	rotXcanon += axes[2] * -360 * tiempoDiferencial * .35;
 
-	int buttoncount;
-
-	const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttoncount);
-
-	if (GLFW_PRESS == buttons[0])
-	{
-		std::cout << "Boton puchado" << std::endl;
-	}
 
 	int estadoR = glfwGetKey(window, GLFW_KEY_R);
 	
@@ -165,7 +301,7 @@ void canon()
 {
 	//Cañon
 	glPushMatrix();
-	glTranslatef(posXtanque, posYtanque, 0.0f);
+	glTranslatef(posXtanque1, posYtanque1, 0.0f);
 	glRotatef(rotXcanon, 0.0f, 0.0f, 1.0f);
 	glScalef(0.1f, 0.1f, 0.0f);
 
@@ -187,7 +323,7 @@ void tanque()
 {
 	glPushMatrix();
 
-	glTranslatef(posXtanque, posYtanque, 0.0f);
+	glTranslatef(posXtanque1, posYtanque1, 0.0f);
 	glRotatef(rotXcanon, 0.0f, 0.0f, 1.0f);
 	glScalef(0.1f, 0.1f, 0.0f);
 
@@ -563,6 +699,25 @@ void dibujarMapa() {
 	}
 }
 
+void crearbalas()
+{
+	glPushMatrix();
+	glTranslatef(posXbala1, posYbala1, 0.0f);
+
+	glScalef(0.25f, 0.25f, 0.0f);
+	glBegin(GL_POLYGON);
+
+	glColor3f(color1, color2, color3);
+
+	glVertex3f(-1.0f, -1.0f, 0.0f);
+	glVertex3f(-1.0f, -0.8f, 0.0f);
+	glVertex3f(-0.8f, -0.8f, 0.0f);
+	glVertex3f(-0.8f, -1.0f, 0.0f);
+
+	glEnd();
+	glPopMatrix();
+}
+
 void dibujar() 
 {
 	//generarGridAleatorio();
@@ -570,7 +725,22 @@ void dibujar()
 
 	canon();
 	tanque();
+
+	 color1 = rand() % 100;
+
+	 color2 = rand() % 100;
+
+	 color3 = rand() % 100;
+
+	color1 = color1 / 100;
+
+	color2 = color2 / 100;
+
+	color3 = color3 / 100;
+
+	crearbalas();
 }
+
 
 int main()
 {
@@ -623,6 +793,7 @@ int main()
      int present1 = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
 	generarGridAleatorio();
+
 
 	//Ciclo de dibujo (Draw Loop)
 	while (!glfwWindowShouldClose(window))
