@@ -10,6 +10,8 @@
 #include "GLFW/glfw3.h"
 
 #include <iostream>
+#include <random>
+#include <time.h>
 
 using namespace std;
 
@@ -20,6 +22,8 @@ float posXtriangulo = 0.0f, posYtriangulo = 0.0f,rotXtriangulo = 0.0f, rotYtrian
 
 //Declarar ventana
 GLFWwindow* window;
+
+bool grid[10][10];
 
 
 void teclado_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -134,9 +138,51 @@ void laberinto()
 	glEnd();
 }
 
+void generarGridAleatorio() {
+	srand(time(NULL));
+
+	for (int i = 0; i < 10; i++) {
+		int paredesX = 0;
+		for (int j = 0; j < 10; j++) {
+			grid[i][j] = (rand() % 5) == 0;
+			paredesX++;
+		}
+	}
+}
+
+void dibujarMapa() {
+	float unidad = 2.0f / 10.0f;
+	float inicio = -1.0f;
+	int count = 0;
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (grid[i][j]) {
+				glBegin(GL_POLYGON);
+				glColor3f(0.0f, 0.0f, 0.0f);
+
+				float prueba = inicio + i * unidad;
+				float prueba2 = inicio + unidad + i * unidad;
+				float prueba3 = inicio + j * unidad;
+				float prueba4 = inicio + unidad + j * unidad;
+				
+				glVertex3f(inicio + i * unidad, inicio + j * unidad, 0.0f);
+				glVertex3f(inicio + i * unidad, inicio + unidad + j * unidad, 0.0f);
+				glVertex3f(inicio + unidad + i * unidad, inicio + unidad + j * unidad, 0.0f);
+				glVertex3f(inicio + unidad + i * unidad, inicio + j * unidad, 0.0f);
+				
+				glEnd();
+				count++;
+			}
+		}
+	}
+}
+
 void dibujar() 
 {
-	laberinto();
+	dibujarMapa();
+	//laberinto();
+	
 
 	glPushMatrix();
 
@@ -204,6 +250,8 @@ int main()
 	//Establecemos que con cada evento de teclado
 	// Se llama a la funcion telcado_callback
 	//glfwSetKeyCallback(window, teclado_callback);
+
+	generarGridAleatorio();
 
 	//Ciclo de dibujo (Draw Loop)
 	while (!glfwWindowShouldClose(window))
