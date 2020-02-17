@@ -141,8 +141,6 @@ void actualizar()
 		}
 	}
 	
-
-	
 	rotXcanon += axes[2] * -360 * tiempoDiferencial;
 
 	int buttoncount;
@@ -163,36 +161,12 @@ void actualizar()
 	tiempoanterior = tiempoactual;
 }
 
-void laberinto()
-{
-	glBegin(GL_QUADS);
-
-	glColor3f(1.0f, 1, 1.0f);
-
-	glVertex3f(-1.0f, 1.0f, 0.0f);
-	glVertex3f(1.0f, 1.0f, 0.0f);
-	glVertex3f(1.0f, -1.0f, 0.0f);
-	glVertex3f(-1.0f, -1.0f, 0.0f);
-
-	glEnd();
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0.0f, 0, 0.0f);
-
-	glVertex3f(-0.9f, 0.9f, 0.0f);
-	glVertex3f(0.9f, 0.9f, 0.0f);
-	glVertex3f(0.9f, -0.9f, 0.0f);
-	glVertex3f(-0.9f, -0.9f, 0.0f);
-
-	glEnd();
-
-}
-
 void canon()
 {
 	//Cañon
 	glPushMatrix();
+	glTranslatef(posXtanque, posYtanque, 0.0f);
+	glRotatef(rotXcanon, 0.0f, 0.0f, 1.0f);
 	glScalef(0.1f, 0.1f, 0.0f);
 
 	glBegin(GL_POLYGON);
@@ -213,6 +187,8 @@ void tanque()
 {
 	glPushMatrix();
 
+	glTranslatef(posXtanque, posYtanque, 0.0f);
+	glRotatef(rotXcanon, 0.0f, 0.0f, 1.0f);
 	glScalef(0.1f, 0.1f, 0.0f);
 
 	glBegin(GL_POLYGON);
@@ -591,39 +567,9 @@ void dibujar()
 {
 	//generarGridAleatorio();
 	dibujarMapa();
-	//laberinto();
 
-	glPushMatrix();
-	glTranslatef(posXtanque, posYtanque, 0.0f);
-
-	glScalef(0.17f, 0.17f, 0.0f);
-
-	
 	canon();
-
 	tanque();
-
-	glPopMatrix();
-
-	glPushMatrix();
-
-	glTranslatef(posXtanque, posYtanque, 0.0f);
-	glRotatef(rotXcanon, 0.0f, 0.0f, 1.0f);
-	glScalef(0.1f, 0.1f, 0.0f);
-
-	glBegin(GL_POLYGON);
-
-	glColor3f(1.0f, 1.0f, 0.6f);//White
-
-	glVertex3f(-0.1f, 0.9f, 0.0f);
-	glVertex3f(0.0f, 0.9f, 0.0f);
-	glVertex3f(0.0f, 0.2f, 0.0f);
-	glVertex3f(-0.1f, 0.2f, 0.0f);
-
-	glEnd();
-
-	glPopMatrix();
-
 }
 
 int main()
