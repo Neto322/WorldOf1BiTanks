@@ -124,8 +124,27 @@ void laberinto()
 
 }
 
+void cañon()
+{
+	//Cañon
+	glBegin(GL_POLYGON);
+
+	glColor3f(1.0f, 1.0f, 0.6f);//White
+
+	glVertex3f(-0.1, 0.9, 0.0);
+	glVertex3f(0.0, 0.9, 0.0);
+	glVertex3f(0.0, 0.2, 0.0);
+	glVertex3f(-0.1, 0.2, 0.0);
+
+	glEnd();
+}
+
 void tanque()
 {
+	glPushMatrix();
+
+	glScalef(0.001f, 0.001f, 0.0f);
+
 	glBegin(GL_POLYGON);
 
 	glColor3f(1.0f, 0.7f, 0.2f);//Orange
@@ -469,21 +488,24 @@ void tanque()
 	glVertex3f(-0.7, -0.6, 0.0);
 
 	glEnd();
+
+	glPopMatrix();
 }
 
 void dibujar() 
 {
 	laberinto();
 
-	glPushMatrix();
+	//glPushMatrix();
 
 	glTranslatef(posXtriangulo, posYtriangulo,0.0f);
 
 	
+	//cañon();
 
 	tanque();
 
-	glPopMatrix();
+	//glPopMatrix();
 }
 
 int main()
