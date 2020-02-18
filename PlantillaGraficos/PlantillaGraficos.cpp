@@ -97,7 +97,7 @@ bool puedeMoverX(float offsetX, float PosobjetoY, float PosobjetoX, float tolera
 		posicionActualGridX < 10 && auxPosicionActualGridX >= 0;
 }
 
-bool puedeMoverY(float offsetY, float PosobjetoY, float PosobjetoX, float tolerancia){
+bool puedeMoverY(float offsetY, float PosobjetoY, float PosobjetoX, float tolerancia) {
 	float auxPosY = PosobjetoY + 1;
 	float auxPosX = PosobjetoX + 1;
 
@@ -161,7 +161,7 @@ void actualizar()
 	}
 
 
-	if(
+	if (
 
 		posXbala1 + 0.001f >= posXtanque2 - 0.05f &&
 
@@ -170,12 +170,12 @@ void actualizar()
 		posYbala1 + 0.001f >= posYtanque2 - 0.05f &&
 
 		posYbala1 - 0.001f <= posYtanque2 + 0.05f
-		
+
 		)
-		{
+	{
 		death2 = true;
 
-		}
+	}
 
 	if (
 
@@ -197,7 +197,7 @@ void actualizar()
 	{
 		rotXcanon2 += 4500 * tiempoDiferencial;
 		scala2 -= -0.01 * tiempoDiferencial;
-		 
+
 	}
 
 	if (death1 == true)
@@ -207,16 +207,16 @@ void actualizar()
 
 	}
 
-	std::cout << cos((ultimoangulo + 90) * 3.141592 / 180.0f)  <<  "    TURU TURU TURU TURU       " << sin((ultimoangulo + 90) * 3.141592 / 180.0f) << std::endl;
+	std::cout << cos((ultimoangulo + 90) * 3.141592 / 180.0f) << "    TURU TURU TURU TURU       " << sin((ultimoangulo + 90) * 3.141592 / 180.0f) << std::endl;
 
 	if (int present = glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
-		
+
 
 		axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
 		if (axes[0] > 0.3)
 		{
-			if (puedeMoverX(0.05f, posYtanque1, posXtanque1,0.14f)) {
+			if (puedeMoverX(0.05f, posYtanque1, posXtanque1, 0.14f)) {
 				posXtanque1 += 0.5 * tiempoDiferencial;
 			}
 		}
@@ -270,32 +270,32 @@ void actualizar()
 			{
 				posXbala1 = posXtanque1;
 				posYbala1 = posYtanque1;
-				hitsbala1 = 250;
+				hitsbala1 = 210;
 				velocidadbalaX1 = 1;
 				velocidadbalaY1 = 1;
 				readytofire = false;
 			}
-				ultimoangulo = rotXcanon1;
+			ultimoangulo = rotXcanon1;
 
 		}
 		if (readytofire == false)
 		{
-			
-		
-			if (!puedeMoverX(0.001f,posYbala1,posXbala1,0.0f))
+
+
+			if (!puedeMoverX(0.001f, posYbala1, posXbala1, 0.0f))
 			{
 				velocidadbalaX1 = 1;
 				hitsbala1--;
 			}
 
-			if (!puedeMoverX(-0.001f,posYbala1,posXbala1, 0.0f))
+			if (!puedeMoverX(-0.001f, posYbala1, posXbala1, 0.0f))
 			{
 				velocidadbalaX1 = -1;
 				hitsbala1--;
 
 			}
 
-			if (!puedeMoverY(0.001f,posYbala1,posXbala1, 0.0f))
+			if (!puedeMoverY(0.001f, posYbala1, posXbala1, 0.0f))
 			{
 				velocidadbalaY1 = 1;
 				hitsbala1--;
@@ -311,7 +311,7 @@ void actualizar()
 			posXbala1 += velocidadbalaX1 * cos((ultimoangulo + 90) * 3.141592 / 180.0f) * tiempoDiferencial;
 
 			posYbala1 += velocidadbalaY1 * sin((ultimoangulo + 90) * 3.141592 / 180.0f) * tiempoDiferencial;
-			 
+
 			if (hitsbala1 <= 0)
 			{
 				posXbala1 = 2.0f;
@@ -320,10 +320,10 @@ void actualizar()
 			}
 		}
 
-	
+
 
 	}
-	
+
 
 	if (int present = glfwJoystickPresent(GLFW_JOYSTICK_2))
 	{
@@ -386,7 +386,7 @@ void actualizar()
 			{
 				posXbala2 = posXtanque2;
 				posYbala2 = posYtanque2;
-				hitsbala2 = 250;
+				hitsbala2 = 210;
 				velocidadbalaX2 = 1;
 				velocidadbalaY2 = 1;
 				readytofire2 = false;
@@ -440,9 +440,9 @@ void actualizar()
 
 	}
 
-	
+
 	int estadoR = glfwGetKey(window, GLFW_KEY_R);
-	
+
 	if (estadoR == GLFW_PRESS) {
 		generarGridAleatorio();
 		posYtanque1 = -0.8f;
@@ -1564,7 +1564,7 @@ void crearbalas2()
 }
 
 
-void dibujar() 
+void dibujar()
 {
 	//generarGridAleatorio();
 	dibujarMapa();
@@ -1594,7 +1594,7 @@ int main()
 	//Si se puedo iniciar GLFW
 	//Inicializmos la ventana
 	//Todas las funciones especificas de GLFW tienen el sufijo glfw
-	window = glfwCreateWindow(1000,1000,"Ventana",NULL,NULL);
+	window = glfwCreateWindow(1000, 1000, "Ventana", NULL, NULL);
 
 	//Si no pudo crear la ventana
 	//Terminamos ejecucion
@@ -1610,7 +1610,7 @@ int main()
 	//Una vex establecido el contexto
 	//Se activan las funciones "Modernas" (gpu) 
 
-	
+
 	glewExperimental = true;
 
 	GLenum errores = glewInit();
@@ -1629,7 +1629,7 @@ int main()
 	// Se llama a la funcion telcado_callback
 	//glfwSetKeyCallback(window, teclado_callback);
 
-     int present1 = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	int present1 = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
 	generarGridAleatorio();
 
@@ -1640,7 +1640,7 @@ int main()
 		//Establecer region de dibujo
 		glViewport(0, 0, 1000, 1000);
 		//Establecemos el color de borrado.
-		glClearColor(0,0.0,0,1);
+		glClearColor(0, 0.0, 0, 1);
 		//Borrar!
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//Actualizar valores y dibujar
