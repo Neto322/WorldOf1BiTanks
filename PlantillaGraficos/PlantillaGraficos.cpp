@@ -284,24 +284,24 @@ void actualizar()
 
 			if (!puedeMoverX(0.001f, posYbala1, posXbala1, 0.0f))
 			{
-				velocidadbalaX1 = 1;
+				velocidadbalaX1 = -1;
 				hitsbala1--;
 			}
 
 			if (!puedeMoverX(-0.001f, posYbala1, posXbala1, 0.0f))
 			{
-				velocidadbalaX1 = -1;
+				velocidadbalaX1 = 1;
 				hitsbala1--;
 
 			}
 
-			if (!puedeMoverY(0.001f, posYbala1, posXbala1, 0.0f))
+			if (!puedeMoverY(-0.001f, posYbala1, posXbala1, 0.0f))
 			{
 				velocidadbalaY1 = 1;
 				hitsbala1--;
 
 			}
-			if (!puedeMoverY(-0.001f, posYbala1, posXbala1, 0.0f))
+			if (!puedeMoverY(0.001f, posYbala1, posXbala1, 0.0f))
 			{
 				velocidadbalaY1 = -1;
 				hitsbala1--;
@@ -400,24 +400,24 @@ void actualizar()
 
 			if (!puedeMoverX(0.001f, posYbala2, posXbala2, 0.0f))
 			{
-				velocidadbalaX2 = 1;
+				velocidadbalaX2 = -1;
 				hitsbala2--;
 			}
 
 			if (!puedeMoverX(-0.001f, posYbala2, posXbala2, 0.0f))
 			{
-				velocidadbalaX2 = -1;
+				velocidadbalaX2 = 1;
 				hitsbala2--;
 
 			}
 
-			if (!puedeMoverY(0.001f, posYbala2, posXbala2, 0.0f))
+			if (!puedeMoverY(-0.001f, posYbala2, posXbala2, 0.0f))
 			{
 				velocidadbalaY2 = 1;
 				hitsbala2--;
 
 			}
-			if (!puedeMoverY(-0.001f, posYbala2, posXbala2, 0.0f))
+			if (!puedeMoverY(0.001f, posYbala2, posXbala2, 0.0f))
 			{
 				velocidadbalaY2 = -1;
 				hitsbala2--;
