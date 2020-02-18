@@ -270,7 +270,7 @@ void actualizar()
 			{
 				posXbala1 = posXtanque1;
 				posYbala1 = posYtanque1;
-				hitsbala1 = 280;
+				hitsbala1 = 220;
 				velocidadbalaX1 = 1;
 				velocidadbalaY1 = 1;
 				readytofire = false;
@@ -386,7 +386,7 @@ void actualizar()
 			{
 				posXbala2 = posXtanque2;
 				posYbala2 = posYtanque2;
-				hitsbala2 = 280;
+				hitsbala2 = 220;
 				velocidadbalaX2 = 1;
 				velocidadbalaY2 = 1;
 				readytofire2 = false;
